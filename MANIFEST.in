@@ -1,0 +1,3 @@
+include *.rst
+recursive-include feint *.html
+recursive-include feint *.js
