@@ -68,15 +68,14 @@ class Chart(object):
                       'window.vec3 = glmatrix.vec3;'
                       'console.log(glmatrix);}})')
 
-        gl_require.format(GLMATRIX_SRC)
-
-        Javascript(gl_require)
+        Javascript(gl_require.format(GLMATRIX_SRC))
+        
         HTML('<script src="{0}"></script>'.format(RUSE_SRC))
         HTML("<div id='ruse' style='height: 500px; width: 800px'></div>")
-
+        
         ruse_plot = ('var el = document.querySelector("#ruse");'
-                     'var ruse = new ruse(el, 800, 500);'
-                     'ruse.plot({0})')
+                     'var r = new ruse(el, 800, 500);'
+                     'r.plot({0})')
         chart = Javascript(
             ruse_plot.format(self.ruse_data.to_json(orient='records'))
             )
