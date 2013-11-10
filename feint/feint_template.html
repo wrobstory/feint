@@ -4,22 +4,16 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://astrojs.s3.amazonaws.com/ruse/examples/lib/gl-matrix.js" charset="utf-8"></script>
     <script src="http://astrojs.s3.amazonaws.com/ruse/dist/ruse.js"></script>
-    <style>
-      .chart {
-        height: 500px;
-        width: 800px;
-      }
-    </style>
   </head>
   <body>
-    <div id="ruse" class="chart"></div>
+    <div id="chart_1" class="chart"></div>
   </body>
 <script type="text/javascript">
 // parse a spec and create a Ruse.js chart
 plot_ruse = function(data) {
-  var el = document.querySelector("#ruse");
-  var ruse = new this.ruse(el, 800, 500);
-  ruse.plot(data);
+  var el = document.querySelector("#chart_1");
+  var r = new ruse(el, 800, 500);
+  r.plot(data);
 };
 
 d3.json('ruse.json', function(data){

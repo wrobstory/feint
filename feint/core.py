@@ -5,6 +5,7 @@ Core: The core functionality for Feint to interact with Ruse.js
 
 """
 from __future__ import (print_function, division)
+import random
 import json
 from pkg_resources import resource_string
 from string import Template
@@ -63,23 +64,25 @@ class Chart(object):
         from IPython.core.display import Javascript
         from IPython.core.display import display
 
-        gl_require = ('require(["{0}"], function(glmatrix) {{'
-                      'window.mat4 = glmatrix.mat4;'
-                      'window.vec3 = glmatrix.vec3;'
-                      'console.log(glmatrix);}})')
-
-        Javascript(gl_require.format(GLMATRIX_SRC))
-        
-        HTML('<script src="{0}"></script>'.format(RUSE_SRC))
-        HTML("<div id='ruse' style='height: 500px; width: 800px'></div>")
-        
-        ruse_plot = ('var el = document.querySelector("#ruse");'
-                     'var r = new ruse(el, 800, 500);'
-                     'r.plot({0})')
-        chart = Javascript(
-            ruse_plot.format(self.ruse_data.to_json(orient='records'))
+        id = random.randint(0, 2 ** 16)
+        js = """
+        require(["{0}"], function(glmatrix) {{
+            window.mat4 = glmatrix.mat4;
+            window.vec3 = glmatrix.vec3;
+            console.log(glmatrix);
+            $.getScript('{1}',function(){{
+                console.log(ruse)
+                var chart_element = $("#vis{2}");
+                var r = new ruse(chart_element[0], 800, 500);
+                r.plot({3});
+            }})
+        }});""".format(
+            GLMATRIX_SRC, RUSE_SRC, id, self.ruse_data.to_json(orient='records')
             )
-        display(chart)
+        a = HTML(
+            '<div id="vis%d" style="height: 500px; width: 800px"></div>' % id)
+        b = Javascript(js)
+        display(a, b)
 
     def to_template(self, json_path='ruse.json',
                     html_path='feint_template.html'):
